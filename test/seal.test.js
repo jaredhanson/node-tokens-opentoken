@@ -67,6 +67,6 @@ describe('seal', function() {
       });
     }); // encrypting to self
   
-  });
+  }); // using defaults
   
-});
+}); // seal
