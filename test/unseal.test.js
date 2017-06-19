@@ -1,5 +1,6 @@
 /* global describe, it */
 
+var otk = require('opentoken');
 var setup = require('../lib/unseal');
 var sinon = require('sinon');
 var expect = require('chai').expect;
@@ -10,7 +11,7 @@ describe('unseal', function() {
   describe('using defaults', function() {
     var unseal, keying;
     
-    describe('unsealing', function() {
+    describe('decrypting', function() {
       before(function() {
         keying = sinon.spy(function(q, cb){
           return cb(null, [ { secret: '12abcdef7890abcdef7890abcdef7890' } ]);
@@ -21,11 +22,17 @@ describe('unseal', function() {
       
       var tkn;
       before(function(done) {
-        var token = 'T1RLAQKwHntT6Nuqrownyf7EV4md28r-tRDDZ7R5gt0TPlfZpH_g4IhWAABwQ7jB_kmopB2RnQ4UMT1Ua_N1NTqPCdJaY9An7YvTSIfsD1t-FoKoCD5-MT79JBypCb0d8pkzEksCJJk1fG8g8IKeBmNufjcK5gZa5yQle_tykMgslb_tPvR4A9hDZy2rPWEefoZEUYckDL7P_zlm7A**';
-        
-        unseal(token, function(err, t) {
-          tkn = t;
-          done(err);
+        var api = new otk.OpenTokenAPI(2, '12abcdef7890abcdef7890abcdef7890');
+        var claims = { foo: 'bar' };
+        claims.subject = 'self';
+      
+        api.createToken(claims, function(err, token) {
+          if (err) { return done(err); }
+          
+          unseal(token, function(err, t) {
+            tkn = t;
+            done(err);
+          });
         });
       });
       
@@ -56,8 +63,8 @@ describe('unseal', function() {
         });
         */
       });
-    }); // unsealing
+    }); // decrypting
     
-  });
+  }); // using defaults
   
-});
+}); // unseal
